@@ -681,19 +681,6 @@ int main(int argc,char* args[])
 		opts.stylesheet ? "reset " : opts.colorscheme==SCHEME_BLACK ? "color:white;" : "color:black;" //Foreground
 	};
 
-	char* bcstyle[10] = {
-		opts.stylesheet ? "bg-black " : "background-color:black;", //Black
-		opts.stylesheet ? "bg-red " : "background-color:red;", //Red
-		opts.stylesheet ? "bg-green " : opts.colorscheme==SCHEME_BLACK ? "background-color:lime;" : "background-color:green;", //Green
-		opts.stylesheet ? "bg-yellow " : opts.colorscheme==SCHEME_BLACK ? "background-color:yellow;" : "background-color:olive;", //Yellow
-		opts.stylesheet ? "bg-blue " : opts.colorscheme==SCHEME_BLACK ? "background-color:#3333FF;" : "background-color:blue;", //Blue
-		opts.stylesheet ? "bg-purple " : opts.colorscheme==SCHEME_BLACK ? "background-color:fuchsia;" : "background-color:purple;", //Purple
-		opts.stylesheet ? "bg-cyan " : opts.colorscheme==SCHEME_BLACK ? "background-color:aqua;" : "background-color:teal;", //Cyan
-		opts.stylesheet ? "bg-white " : opts.colorscheme==SCHEME_BLACK ? "background-color:white;" : "background-color:gray;", //White
-		opts.stylesheet ? "bg-reset " : opts.colorscheme==SCHEME_BLACK ? "background-color:black;" : opts.colorscheme==SCHEME_PINK ? "background-color:pink;" : "background-color:white;", //Background
-		opts.stylesheet ? "bg-inverted " : opts.colorscheme==SCHEME_BLACK ? "background-color:white;" : "background-color:black;", //Foreground
-	};
-
 	if (!opts.no_header)
 		printHeader(&opts);
 
@@ -1007,55 +994,9 @@ int main(int argc,char* args[])
 					// Open new <span> if current state differs from the default one
 					if (statesDiffer(&state, &default_state))
 					{
-						if (opts.stylesheet)
-							printf("<span class=\"");
-						else
-							printf("<span style=\"");
-						if (state.underline)
-						{
-							if (opts.stylesheet)
-								printf("underline ");
-							else
-								printf("text-decoration:underline;");
-						}
-						if (state.bold)
-						{
-							if (opts.stylesheet)
-								printf("bold ");
-							else
-								printf("font-weight:bold;");
-						}
-						if (state.italic)
-						{
-							if (opts.stylesheet)
-								printf("italic ");
-							else
-								printf("font-style:italic;");
-						}
-						if (state.blink)
-						{
-							if (opts.stylesheet)
-								printf("blink ");
-							else
-								printf("text-decoration:blink;");
-						}
-						if (state.crossedout)
-						{
-							if (opts.stylesheet)
-								printf("crossed-out ");
-							else
-								printf("text-decoration:line-through;");
-						}
-						if (state.highlighted)
-						{
-							if (opts.stylesheet)
-								printf("highlighted ");
-							else
-								printf("filter: contrast(70%%) brightness(190%%);");
-						}						if (opts.stylesheet &&
-							state.fc_colormode != MODE_3BIT &&
-							(state.fc_colormode != MODE_8BIT || state.fc>15))
-							printf("\" style=\"");
+
+						printf("<span class=\"C");
+
 						switch (state.fc_colormode)
 						{
 							case MODE_3BIT:
@@ -1068,39 +1009,15 @@ int main(int argc,char* args[])
 								{
 									char rgb[12];
 									make_rgb(state.fc,rgb);
-									printf("color:#%s;",rgb);
+									printf("%s",rgb);
 								}
 								break;
 							case MODE_24BIT:
-								printf("color:#%06x;",state.fc);
-								break;
-						};
-						if (opts.stylesheet &&
-							!(state.fc_colormode != MODE_3BIT &&
-							(state.fc_colormode != MODE_8BIT || state.fc>15)) && //already in style
-							state.bc_colormode != MODE_3BIT &&
-							(state.bc_colormode != MODE_8BIT || state.bc>15))
-							printf("\" style=\"");
-						switch (state.bc_colormode)
-						{
-							case MODE_3BIT:
-								if (state.bc>=0 && state.bc<=9) printf("%s", bcstyle[state.bc]);
-								break;
-							case MODE_8BIT:
-								if (state.bc>=0 && state.bc<=7)
-									printf("%s", bcstyle[state.bc]);
-								else
-								{
-									char rgb[12];
-									make_rgb(state.bc,rgb);
-									printf("background-color:#%s;",rgb);
-								}
-								break;
-							case MODE_24BIT:
-								printf("background-color:#%06x;",state.bc);
+								printf("%06x",state.fc);
 								break;
 						};
 						printf("\">");
+
 					}
 				}
 			}
